@@ -1,0 +1,12 @@
+footer.footerGral {
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    background-image: linear-gradient(to right, #007991 0%, $color-green 51%, #007991 100%);
+    justify-items: center;
+    grid-area: footerGral;
+}
+
+.footer {
+    @extend footer.footerGral;
+    grid-area: footer;
+}
