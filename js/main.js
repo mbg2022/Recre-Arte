@@ -148,7 +148,8 @@ function crearActividad() {
 
     //Guarda al Array en el que están TODAS las actividades existentes
     let indice = actividadesGuardadas.length;
-    actividadesGuardadas.push(new Actividades(indice + 1, activity_name, activity_date, activity_value, locat, country));
+    //Optimización de código con el operador ++
+    actividadesGuardadas.push(new Actividades(indice++, activity_name, activity_date, activity_value, locat, country));
 
 
     location.reload()
