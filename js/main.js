@@ -5,7 +5,6 @@ let contenedor_fav = document.getElementById("contenidoFavoritos");
 
 let actividades = [];
 let actividadesGuardadas = [];
-//let actividadesCreadasPorMi = []; Queda para seguir con la funcionalidad pensada
 let actividadesFavoritas = [];
 
 
@@ -15,8 +14,6 @@ cargarActividadesFavoritas();
 mostrarActividades();
 mostrarActividadesFavoritas();
 
-
-/*Inicio Actividades*/
 class Actividades {
     constructor(id, activity_name, activity_date, activity_value, locat, country) {
         this.id = id;
@@ -33,24 +30,44 @@ class Actividades {
 }
 
 
+
 function cargarActividades() {
-    if (localStorage.getItem("StorageActividades") !== null) { //si existe    
-        actividadesGuardadas = JSON.parse(localStorage.getItem("StorageActividades"));
-        return;
-    } else {
-        return;
-    }
+    /*Bloque sin optimizar
+     if (localStorage.getItem("StorageActividades") !== null) { //si existe    
+         actividadesGuardadas = JSON.parse(localStorage.getItem("StorageActividades"));
+         return;
+     } else {
+         return;
+     }*/
+    /*bloque de código optimizado*/
+    (localStorage.getItem("StorageActividades") !== null) ? persistirEnLocalStActividades(): console.log("no hay actividades aún creadas");
+}
+
+function persistirEnLocalStActividades() {
+    actividadesGuardadas = JSON.parse(localStorage.getItem("StorageActividades"));
+    return actividadesGuardadas;
 }
 
 
+
 function cargarActividadesFavoritas() {
-    if (localStorage.getItem("StorageActividadesFavoritas") !== null) { //si existe    
+    /*Bloque sin optimizar if (localStorage.getItem("StorageActividadesFavoritas") !== null) { //si existe    
         actividadesFavoritas = JSON.parse(localStorage.getItem("StorageActividadesFavoritas"));
         return;
     } else {
         console.log("no hay actividades favoritas")
         return;
     }
+    */
+    /*bloque de código optimizado*/
+    (localStorage.getItem("StorageActividadesFavoritas") !== null) ? persistirEnLocalStActividadesFavoritas(): console.log("no hay actividades favoritas creadas");
+
+
+}
+
+function persistirEnLocalStActividadesFavoritas() {
+    actividadesFavoritas = JSON.parse(localStorage.getItem("StorageActividadesFavoritas"));
+    return actividadesFavoritas;
 }
 
 
@@ -95,7 +112,6 @@ function mostrarActividadesFavoritas() {
 function resetearLocalStore() {
     localStorage.removeItem("StorageActividadesFavoritas");
     localStorage.removeItem("StorageActividades");
-    //localStorage.removeItem("StorageActividadesCreadasPorMi");
     location.reload();
 
 }
@@ -134,14 +150,9 @@ function crearActividad() {
     let indice = actividadesGuardadas.length;
     actividadesGuardadas.push(new Actividades(indice + 1, activity_name, activity_date, activity_value, locat, country));
 
-    /*
-    let indice2 = actividadesCreadasPorMi.length;
-    //Guarda al Array para distinguir que fueron las actividades que cree yo(esto para más addelante)
-    actividadesCreadasPorMi.push(new Actividades(indice + 1, activity_name, activity_date, activity_value, locat, country));*/
 
     location.reload()
     localStorage.setItem("StorageActividades", JSON.stringify(actividadesGuardadas));
-    // localStorage.setItem("StorageActividadesCreadasPorMi", JSON.stringify(actividadesCreadasPorMi));
     location.reload()
 };
 
