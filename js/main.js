@@ -31,7 +31,10 @@ class Actividades {
 
 
 
+
 function cargarActividades() {
+
+
     /*Bloque sin optimizar
      if (localStorage.getItem("StorageActividades") !== null) { //si existe    
          actividadesGuardadas = JSON.parse(localStorage.getItem("StorageActividades"));
@@ -39,6 +42,8 @@ function cargarActividades() {
      } else {
          return;
      }*/
+
+
     /*bloque de código optimizado*/
     (localStorage.getItem("StorageActividades") !== null) ? persistirEnLocalStActividades(): console.log("no hay actividades aún creadas");
 }
@@ -47,8 +52,6 @@ function persistirEnLocalStActividades() {
     actividadesGuardadas = JSON.parse(localStorage.getItem("StorageActividades"));
     return actividadesGuardadas;
 }
-
-
 
 function cargarActividadesFavoritas() {
     /*Bloque sin optimizar if (localStorage.getItem("StorageActividadesFavoritas") !== null) { //si existe    
@@ -60,7 +63,7 @@ function cargarActividadesFavoritas() {
     }
     */
     /*bloque de código optimizado*/
-    (localStorage.getItem("StorageActividadesFavoritas") !== null) ? persistirEnLocalStActividadesFavoritas(): console.log("no hay actividades favoritas creadas");
+    (localStorage.getItem("StorageActividadesFavoritas") !== null) ? persistirEnLocalStActividadesFavoritas(): actividadesFavoritas = [] //console.log("no hay actividades favoritas creadas");
 
 
 }
@@ -92,6 +95,8 @@ function mostrarActividades() {
 
 
 function mostrarActividadesFavoritas() {
+
+    console.log("mostrar  favoritas", actividadesFavoritas)
     actividadesFavoritas.forEach((actividadesFavoritas) => {
         containerActividadesFavoritos.innerHTML += `
         <div class="card border-primary mb-3" style="max-width: 20rem;">
@@ -146,6 +151,15 @@ function crearActividad() {
     country = document.getElementById("country").value;
     locat = document.getElementById("locat").value;
 
+
+    /*DESAFÍO EXPIRA EL LUNES 11/07/2022 23:59HS
+    Incorporando librerías: Se agregó una validación para que al crear la actividad todos los campos se encuentren completos, caso contrario muestra un SweetAlert*/
+
+    if (activity_name == '' || activity_date == '' || activity_value == '' || country == '' || locat == '') {
+        swal("Para crear la actividad", "...Debe completar todos los campos");
+        return;
+    }
+
     //Guarda al Array en el que están TODAS las actividades existentes
     let indice = actividadesGuardadas.length;
     //Optimización de código con el operador ++
@@ -160,31 +174,59 @@ function crearActividad() {
 
 //Agrega la actividad Favorita al array de Favoritos
 function actividadFavorita(identificador) {
+
     let indice = identificador - 1;
     let objeto_seleccionado = {};
     objeto_seleccionado = actividadesGuardadas[indice];
+    console.log(objeto_seleccionado);
     if (!actividadesFavoritas.some(e => e.id === identificador)) {
         actividadesFavoritas.push(objeto_seleccionado);
         location.reload()
         localStorage.setItem("StorageActividadesFavoritas", JSON.stringify(actividadesFavoritas));
         location.reload()
     } else {
-        alert("La actividad ya se encuentra en favoritos =)")
+        swal("La actividad ya se encuentra en favoritos", "..Podes Favoritear otras...")
     }
 }
 
 
 //Elimina la actividad del array de favoritos
 function eliminarActividadFavorita(id) {
-    let favoritos_filtrado = actividadesFavoritas.filter((elemento) => elemento.id != id);
-    actividadesFavoritas = favoritos_filtrado;
-    if (actividadesFavoritas.length > 0) { //para que no guarde el array vacio
-        localStorage.setItem("StorageActividadesFavoritas", JSON.stringify(actividadesFavoritas));
-        location.reload();
-    } else {
-        localStorage.removeItem("StorageActividadesFavoritas");
-        location.reload();
-    }
+
+    /*DESAFÍO EXPIRA EL LUNES 11/07/2022 23:59HS
+    Incorporando librerías*/
+
+    swal({
+        title: 'Eliminar de Favoritos?',
+        text: "No podrás revertir esta acción!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Eliminar!'
+    }).then(function() {
+
+        let favoritos_filtrado = actividadesFavoritas.filter((elemento) => elemento.id != id);
+        actividadesFavoritas = favoritos_filtrado;
+        if (actividadesFavoritas.length > 0) { //para que no guarde el array vacio
+            localStorage.setItem("StorageActividadesFavoritas", JSON.stringify(actividadesFavoritas));
+            location.reload();
+        } else {
+            localStorage.removeItem("StorageActividadesFavoritas");
+            location.reload();
+            swal(
+                'Eliminada!',
+                'Se eliminó la actividad de favoritos.',
+                'success'
+            );
+
+        }
+
+
+
+
+    })
+
 }
 
 
