@@ -319,7 +319,9 @@ function cargarArrayActividades(actividad) {
 
 
 function cargarActividadesUsuarios() {
-    fetch(`http://localhost:3000/actividad`)
+    //fetch(`http://localhost:3000/actividad`)
+
+    fetch(`https://my-json-server.typicode.com/mbg2022/api_Actividades/actividad`)
         // fetch(`actividad.json`)
         .then((resp) => resp.json())
         .then((data) => {
