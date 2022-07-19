@@ -6,13 +6,16 @@ let contenedor_fav = document.getElementById("contenidoFavoritos");
 let actividades = [];
 let actividadesGuardadas = [];
 let actividadesFavoritas = [];
+let actividadesUsuarios = [];
+let actividadesUFavoritas = [];
 
-
+cargarActividadesUsuarios();
 cargarActividades();
 cargarActividadesFavoritas();
-
+cargarActividadesUFavoritas();
 mostrarActividades();
 mostrarActividadesFavoritas();
+mostrarActividadesUFavoritas();
 
 class Actividades {
     constructor(id, activity_name, activity_date, activity_value, locat, country) {
@@ -33,18 +36,6 @@ class Actividades {
 
 
 function cargarActividades() {
-
-
-    /*Bloque sin optimizar
-     if (localStorage.getItem("StorageActividades") !== null) { //si existe    
-         actividadesGuardadas = JSON.parse(localStorage.getItem("StorageActividades"));
-         return;
-     } else {
-         return;
-     }*/
-
-
-    /*bloque de código optimizado*/
     (localStorage.getItem("StorageActividades") !== null) ? persistirEnLocalStActividades(): console.log("no hay actividades aún creadas");
 }
 
@@ -54,18 +45,7 @@ function persistirEnLocalStActividades() {
 }
 
 function cargarActividadesFavoritas() {
-    /*Bloque sin optimizar if (localStorage.getItem("StorageActividadesFavoritas") !== null) { //si existe    
-        actividadesFavoritas = JSON.parse(localStorage.getItem("StorageActividadesFavoritas"));
-        return;
-    } else {
-        console.log("no hay actividades favoritas")
-        return;
-    }
-    */
-    /*bloque de código optimizado*/
-    (localStorage.getItem("StorageActividadesFavoritas") !== null) ? persistirEnLocalStActividadesFavoritas(): actividadesFavoritas = [] //console.log("no hay actividades favoritas creadas");
-
-
+    (localStorage.getItem("StorageActividadesFavoritas") !== null) ? persistirEnLocalStActividadesFavoritas(): console.log("no hay actividades favoritas creadas");
 }
 
 function persistirEnLocalStActividadesFavoritas() {
@@ -73,6 +53,15 @@ function persistirEnLocalStActividadesFavoritas() {
     return actividadesFavoritas;
 }
 
+
+function cargarActividadesUFavoritas() {
+    (localStorage.getItem("StorageActividadesUFavoritas") !== null) ? persistirEnLocalStActividadesUFavoritas(): console.log("no hay actividades favoriteadas de usuarios  agregadas");
+}
+
+function persistirEnLocalStActividadesUFavoritas() {
+    actividadesUFavoritas = JSON.parse(localStorage.getItem("StorageActividadesUFavoritas"));
+    return actividadesUFavoritas;
+}
 
 
 function mostrarActividades() {
@@ -95,8 +84,6 @@ function mostrarActividades() {
 
 
 function mostrarActividadesFavoritas() {
-
-    console.log("mostrar  favoritas", actividadesFavoritas)
     actividadesFavoritas.forEach((actividadesFavoritas) => {
         containerActividadesFavoritos.innerHTML += `
         <div class="card border-primary mb-3" style="max-width: 20rem;">
@@ -112,6 +99,44 @@ function mostrarActividadesFavoritas() {
         `;
     });
 }
+
+
+function mostrarActividadesUFavoritas() {
+    actividadesUFavoritas.forEach((actividadesUFavoritas) => {
+        containerActividadesUFavoritos.innerHTML += `
+        <div class="card border-primary mb-3" style="max-width: 20rem;">
+        <div class="card-header">${actividadesUFavoritas.activity_name}</div>
+        <div class="card-body">
+            <h4 class="card-title">${actividadesUFavoritas.activity_date}</h4>
+            <h5>${actividadesUFavoritas.locat}</h5>
+            <h5>Faltan ${calcularCuantosDiasFaltan(actividadesUFavoritas.activity_date)} días</h5>
+            <p class="card-text">$ ${actividadesUFavoritas.activity_value}</p>
+            <button onClick="eliminarActividadUFavorita(${actividadesUFavoritas.id})" class="btn btn-outline-success">Eliminar Fav</button>
+        </div>
+        </div>
+        `;
+    });
+
+}
+
+function mostrarActividadesUsuarios(actividadesUsuarios) {
+    actividadesUsuarios.forEach((actividadesUsuarios) => {
+        containerActividadesUsuarios.innerHTML += `
+        <div class="card border-primary mb-3" style="max-width: 20rem;">
+        <div class="card-header">${actividadesUsuarios.activity_name}</div>
+        <div class="card-body">
+            <h4 class="card-title">${(actividadesUsuarios.activity_date)}</h4>
+            <h5>${actividadesUsuarios.locat}</h5>
+            <h5>Faltan ${calcularCuantosDiasFaltan(actividadesUsuarios.activity_date)} días</h5>
+            <p class="card-text">$ ${actividadesUsuarios.activity_value}</p>
+            <button onClick="actividadUFavorita(${(actividadesUsuarios.id)-1})" class="btn btn-outline-success">Favoritear</button>
+           
+        </div>
+        </div>
+        `;
+    });
+}
+
 
 
 function resetearLocalStore() {
@@ -152,9 +177,6 @@ function crearActividad() {
     locat = document.getElementById("locat").value;
 
 
-    /*DESAFÍO EXPIRA EL LUNES 11/07/2022 23:59HS
-    Incorporando librerías: Se agregó una validación para que al crear la actividad todos los campos se encuentren completos, caso contrario muestra un SweetAlert*/
-
     if (activity_name == '' || activity_date == '' || activity_value == '' || country == '' || locat == '') {
         swal("Para crear la actividad", "...Debe completar todos los campos");
         return;
@@ -162,7 +184,6 @@ function crearActividad() {
 
     //Guarda al Array en el que están TODAS las actividades existentes
     let indice = actividadesGuardadas.length;
-    //Optimización de código con el operador ++
     actividadesGuardadas.push(new Actividades(indice++, activity_name, activity_date, activity_value, locat, country));
 
 
@@ -173,12 +194,12 @@ function crearActividad() {
 
 
 //Agrega la actividad Favorita al array de Favoritos
-function actividadFavorita(identificador) {
+function actividadFavorita(identificador) { //actividadesGuardadas.id
 
     let indice = identificador - 1;
     let objeto_seleccionado = {};
-    objeto_seleccionado = actividadesGuardadas[indice];
-    console.log(objeto_seleccionado);
+    objeto_seleccionado = actividadesGuardadas[identificador];
+
     if (!actividadesFavoritas.some(e => e.id === identificador)) {
         actividadesFavoritas.push(objeto_seleccionado);
         location.reload()
@@ -190,12 +211,26 @@ function actividadFavorita(identificador) {
 }
 
 
+
+//Agrega la actividad Favorita al array de Favoritos
+function actividadUFavorita(identificador) {
+    let indice = identificador - 1;
+    let objeto_seleccionado = {};
+    objeto_seleccionado = actividadesUsuarios[identificador];
+
+    if (!actividadesUFavoritas.some(e => e.id === identificador)) {
+        actividadesUFavoritas.push(objeto_seleccionado);
+        location.reload()
+        localStorage.setItem("StorageActividadesUFavoritas", JSON.stringify(actividadesUFavoritas));
+        location.reload()
+    } else {
+        swal("La actividad ya se encuentra en favoritos", "..Podes Favoritear otras...")
+    }
+}
+
+
 //Elimina la actividad del array de favoritos
 function eliminarActividadFavorita(id) {
-
-    /*DESAFÍO EXPIRA EL LUNES 11/07/2022 23:59HS
-    Incorporando librerías*/
-
     swal({
         title: 'Eliminar de Favoritos?',
         text: "No podrás revertir esta acción!",
@@ -222,6 +257,38 @@ function eliminarActividadFavorita(id) {
 
         }
 
+    })
+
+}
+
+
+function eliminarActividadUFavorita(id) {
+    swal({
+        title: 'Actividad creada por otro usuario - Eliminar de Favoritos?',
+        text: "No podrás revertir esta acción!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Eliminar!'
+    }).then(function() {
+
+        let favoritos_filtrado = actividadesUFavoritas.filter((elemento) => elemento.id != id);
+        actividadesUFavoritas = favoritos_filtrado;
+        if (actividadesUFavoritas.length > 0) {
+            localStorage.setItem("StorageActividadesUFavoritas", JSON.stringify(actividadesUFavoritas));
+            location.reload();
+        } else {
+            localStorage.removeItem("StorageActividadesUFavoritas");
+            location.reload();
+            swal(
+                'Eliminada!',
+                'Se eliminó la actividad de favoritos.',
+                'success'
+            );
+
+        }
+
 
 
 
@@ -230,15 +297,38 @@ function eliminarActividadFavorita(id) {
 }
 
 
+
+
 //Elimina la actividad del array actividadesGuardadas
 function eliminarActividad(id) {
     let actividadesGuardadas_filtrado = actividadesGuardadas.filter((elemento) => elemento.id != id);
     actividadesGuardadas = actividadesGuardadas_filtrado;
     localStorage.setItem("StorageActividades", JSON.stringify(actividadesGuardadas));
-    eliminarActividadFavorita(id) //Elimina tambien la actividad de favoritas
+
+    let actividadesFavoritas_filtrado = actividadesFavoritas.filter((elemento) => elemento.id != id);
+    actividadesFavoritas = actividadesFavoritas_filtrado;
+    localStorage.setItem("StorageActividadesFavoritas", JSON.stringify(actividadesFavoritas));
+
     location.reload();
 }
 
 function cargarArrayActividades(actividad) {
     actividades.push(actividad);
+}
+
+
+
+function cargarActividadesUsuarios() {
+    fetch(`http://localhost:3000/actividad`)
+        // fetch(`actividad.json`)
+        .then((resp) => resp.json())
+        .then((data) => {
+            console.log(data);
+            data.forEach(element => {
+                actividadesUsuarios.push(element);
+
+            })
+            mostrarActividadesUsuarios(actividadesUsuarios);
+        })
+
 }
