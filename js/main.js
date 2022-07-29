@@ -70,7 +70,7 @@ function mostrarActividades() {
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesGuardadas.activity_name}</div>
         <div class="card-body">
-            <h4 class="card-title">${(actividadesGuardadas.activity_date)}</h4>
+            <h4 class="card-title">${(formatearFechaDDMMAA(actividadesGuardadas.activity_date))}</h4>
             <h5>${actividadesGuardadas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesGuardadas.activity_date)} días</h5>
             <p class="card-text">$ ${actividadesGuardadas.activity_value}</p>
@@ -89,7 +89,7 @@ function mostrarActividadesFavoritas() {
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesFavoritas.activity_name}</div>
         <div class="card-body">
-            <h4 class="card-title">${actividadesFavoritas.activity_date}</h4>
+            <h4 class="card-title">${formatearFechaDDMMAA(actividadesFavoritas.activity_date)}</h4>
             <h5>${actividadesFavoritas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesFavoritas.activity_date)} días</h5>
             <p class="card-text">$ ${actividadesFavoritas.activity_value}</p>
@@ -123,10 +123,11 @@ function mostrarActividadesUsuarios(actividadesUsuarios) {
     actividadesUsuarios.forEach((actividadesUsuarios) => {
         containerActividadesUsuarios.innerHTML += `
         <div class="card border-primary mb-3" style="max-width: 20rem;">
-        <div class="card-header">${actividadesUsuarios.activity_name}</div>
+        <div class="card-header"> <h3>${actividadesUsuarios.activity_name} </h3></div>
         <div class="card-body">
-            <h4 class="card-title">${(actividadesUsuarios.activity_date)}</h4>
-            <h5>${actividadesUsuarios.locat}</h5>
+        <h4>${actividadesUsuarios.country} / ${actividadesUsuarios.locat}</h4>
+            <h5 class="card-title">${formatearFechaDDMMAA(actividadesUsuarios.activity_date)}</h5>
+           
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesUsuarios.activity_date)} días</h5>
             <p class="card-text">$ ${actividadesUsuarios.activity_value}</p>
             <button onClick="actividadUFavorita(${(actividadesUsuarios.id)-1})" class="btn btn-outline-success">Favoritear</button>

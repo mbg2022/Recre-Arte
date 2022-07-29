@@ -24,7 +24,7 @@ $color-green:#E9FF33;
 @import "formContacto";
 @mixin subtitulo {
     text-align: center;
-    color: grey;
+    color: black;
     border-bottom: 3px solid #78ffd6;
     padding-bottom: 10px;
 }
@@ -63,6 +63,10 @@ h5 {
     font-family: 'Montserrat', sans-serif;
 }
 
+h4 {
+    @include subtitulo;
+}
+
 h6 {
     text-align: center;
     font-family: 'Montserrat', sans-serif;
@@ -84,6 +88,10 @@ h6 {
     justify-content: center;
     flex-wrap: wrap;
     align-content: center
+}
+
+option {
+    color: #000;
 }
 
 section {
@@ -343,7 +351,7 @@ span {
 
 .subtitulo {
     text-align: center;
-    color: grey;
+    color: black;
     border-bottom: 3px solid #78ffd6;
     padding-bottom: 10px;
 }

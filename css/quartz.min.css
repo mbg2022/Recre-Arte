@@ -75,7 +75,7 @@
 }
 
 @media (prefers-reduced-motion:no-preference) {
-    :root {
+     :root {
         scroll-behavior: smooth
     }
 }
@@ -3571,8 +3571,8 @@ fieldset:disabled .btn {
 .btn-outline-secondary.dropdown-toggle.show,
 .btn-outline-secondary:active {
     color: #000;
-    background-color: rgba(255, 255, 255, .4);
-    border-color: rgba(255, 255, 255, .4)
+    background-color: rgba(5, 1, 1, 0.4);
+    border-color: rgba(3, 0, 0, 0.4)
 }
 
 .btn-check:active+.btn-outline-secondary:focus,
@@ -3590,8 +3590,9 @@ fieldset:disabled .btn {
 }
 
 .btn-outline-success {
-    color: #41d7a7;
-    border-color: #41d7a7
+    color: lavender;
+    border-color: #41d7a7;
+    background-color: black;
 }
 
 .btn-outline-success:hover {
