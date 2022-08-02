@@ -17,6 +17,7 @@ mostrarActividades();
 mostrarActividadesFavoritas();
 mostrarActividadesUFavoritas();
 
+
 class Actividades {
     constructor(id, activity_name, activity_date, activity_value, locat, country) {
         this.id = id;
@@ -31,7 +32,6 @@ class Actividades {
         let resta = difMiliseg / (1000 * 60 * 60 * 24)
     }
 }
-
 
 
 
@@ -74,7 +74,7 @@ function mostrarActividades() {
             <h5>${actividadesGuardadas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesGuardadas.activity_date)} días</h5>
             <p class="card-text">$ ${actividadesGuardadas.activity_value}</p>
-            <button onClick="actividadFavorita(${actividadesGuardadas.id})" class="btn btn-outline-success">Favoritear</button>
+           <button onClick="actividadFavorita(${actividadesGuardadas.id})" class="btn btn-outline-success">Favoritear</button>
             <button onClick="eliminarActividad(${actividadesGuardadas.id})" class="btn btn-outline-success">Eliminar</button>
         </div>
         </div>
@@ -85,7 +85,7 @@ function mostrarActividades() {
 
 function mostrarActividadesFavoritas() {
     actividadesFavoritas.forEach((actividadesFavoritas) => {
-        containerActividadesFavoritos.innerHTML += `
+        containerActividadesUFavoritos.innerHTML += `
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesFavoritas.activity_name}</div>
         <div class="card-body">
@@ -107,7 +107,7 @@ function mostrarActividadesUFavoritas() {
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesUFavoritas.activity_name}</div>
         <div class="card-body">
-            <h4 class="card-title">${actividadesUFavoritas.activity_date}</h4>
+            <h4 class="card-title">${(formatearFechaDDMMAA(actividadesUFavoritas.activity_date))}</h4>
             <h5>${actividadesUFavoritas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesUFavoritas.activity_date)} días</h5>
             <p class="card-text">$ ${actividadesUFavoritas.activity_value}</p>
@@ -127,11 +127,9 @@ function mostrarActividadesUsuarios(actividadesUsuarios) {
         <div class="card-body">
         <h4>${actividadesUsuarios.country} / ${actividadesUsuarios.locat}</h4>
             <h5 class="card-title">${formatearFechaDDMMAA(actividadesUsuarios.activity_date)}</h5>
-           
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesUsuarios.activity_date)} días</h5>
             <p class="card-text">$ ${actividadesUsuarios.activity_value}</p>
-            <button onClick="actividadUFavorita(${(actividadesUsuarios.id)-1})" class="btn btn-outline-success">Favoritear</button>
-           
+            <button onClick="actividadUFavorita(${(actividadesUsuarios.id)-1})" class="btn btn-outline-success">Favoritear</button>        
         </div>
         </div>
         `;
@@ -147,13 +145,14 @@ function resetearLocalStore() {
 
 }
 
+//Formatea una fecha en milisegundos y la pasa a formato DDMMAA  
 function formatearFechaDDMMAA(fecha) {
     let date = new Date(fecha);
     let fechaFormateada = `${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`
     return fechaFormateada;
 }
 
-
+//Dada una fecha devuelve la diferencia en días con respecto a la fecha actual
 function calcularCuantosDiasFaltan(fechaActividad) {
     let fechaHoy = new Date();
     let difMiliseg = Math.abs(Date.parse(fechaActividad) - Date.parse(fechaHoy))
@@ -169,14 +168,13 @@ function calcularDistancia(fechaActividad) {
 }
 
 
-/*Levanta las Actividades del form*/
+/* Obtiene las actividades del DOM */
 function crearActividad() {
     activity_name = document.getElementById("activity_name").value;
     activity_date = document.getElementById("activity_date").value;
     activity_value = document.getElementById("activity_value").value;
     country = document.getElementById("country").value;
     locat = document.getElementById("locat").value;
-
 
     if (activity_name == '' || activity_date == '' || activity_value == '' || country == '' || locat == '') {
         swal("Para crear la actividad", "...Debe completar todos los campos");
@@ -187,7 +185,6 @@ function crearActividad() {
     let indice = actividadesGuardadas.length;
     actividadesGuardadas.push(new Actividades(indice++, activity_name, activity_date, activity_value, locat, country));
 
-
     location.reload()
     localStorage.setItem("StorageActividades", JSON.stringify(actividadesGuardadas));
     location.reload()
@@ -195,13 +192,13 @@ function crearActividad() {
 
 
 //Agrega la actividad Favorita al array de Favoritos
-function actividadFavorita(identificador) { //actividadesGuardadas.id
-
+function actividadFavorita(identificador) {
     let indice = identificador - 1;
     let objeto_seleccionado = {};
     objeto_seleccionado = actividadesGuardadas[identificador];
 
     if (!actividadesFavoritas.some(e => e.id === identificador)) {
+
         actividadesFavoritas.push(objeto_seleccionado);
         location.reload()
         localStorage.setItem("StorageActividadesFavoritas", JSON.stringify(actividadesFavoritas));
@@ -213,8 +210,13 @@ function actividadFavorita(identificador) { //actividadesGuardadas.id
 
 
 
+
+
+
+
 //Agrega la actividad Favorita al array de Favoritos
 function actividadUFavorita(identificador) {
+
     let indice = identificador - 1;
     let objeto_seleccionado = {};
     objeto_seleccionado = actividadesUsuarios[identificador];
@@ -227,24 +229,33 @@ function actividadUFavorita(identificador) {
     } else {
         swal("La actividad ya se encuentra en favoritos", "..Podes Favoritear otras...")
     }
-}
+
+
+};
+
+
+
+//
+
+
 
 
 //Elimina la actividad del array de favoritos
 function eliminarActividadFavorita(id) {
+
     swal({
         title: 'Eliminar de Favoritos?',
         text: "No podrás revertir esta acción!",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
         confirmButtonText: 'Si, Eliminar!'
     }).then(function() {
 
         let favoritos_filtrado = actividadesFavoritas.filter((elemento) => elemento.id != id);
         actividadesFavoritas = favoritos_filtrado;
-        if (actividadesFavoritas.length > 0) { //para que no guarde el array vacio
+        if (actividadesFavoritas.length > 0) {
             localStorage.setItem("StorageActividadesFavoritas", JSON.stringify(actividadesFavoritas));
             location.reload();
         } else {
@@ -264,14 +275,17 @@ function eliminarActividadFavorita(id) {
 
 
 function eliminarActividadUFavorita(id) {
+
     swal({
         title: 'Actividad creada por otro usuario - Eliminar de Favoritos?',
         text: "No podrás revertir esta acción!",
         type: 'warning',
         showCancelButton: true,
+        showConfirmButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Si, Eliminar!'
+
     }).then(function() {
 
         let favoritos_filtrado = actividadesUFavoritas.filter((elemento) => elemento.id != id);
@@ -320,10 +334,8 @@ function cargarArrayActividades(actividad) {
 
 
 function cargarActividadesUsuarios() {
-    //fetch(`http://localhost:3000/actividad`)
-
+    /* Hice una api directamente desde el github para consumir a través del fech y con https://my-json-server.typicode.com/ */
     fetch(`https://my-json-server.typicode.com/mbg2022/api_Actividades/actividad`)
-        // fetch(`actividad.json`)
         .then((resp) => resp.json())
         .then((data) => {
             console.log(data);

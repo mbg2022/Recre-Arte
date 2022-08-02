@@ -131,7 +131,7 @@ const actividad = [
         "activity_name": "Baile",
         "activity_date": "2021-10-23",
         "activity_value": "2698",
-        "locat": "CABA",
+        "locat": "Zona Norte",
         "country": "Argentina"
     }, {
         "id": 20,

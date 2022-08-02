@@ -5069,6 +5069,7 @@ fieldset:disabled .btn {
     -ms-flex-direction: column;
     flex-direction: column;
     min-width: 0;
+    flex-wrap: wrap;
     word-wrap: break-word;
     background-color: transparent;
     background-clip: border-box;

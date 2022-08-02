@@ -731,11 +731,11 @@ span {
 
 .containerActividades {
     width: 80%;
-    margin: 50px auto;
+    margin: auto auto;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 button.accordion {
