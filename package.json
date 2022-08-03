@@ -270,6 +270,7 @@
     "strip-json-comments": "^2.0.1",
     "supports-color": "^7.2.0",
     "supports-preserve-symlinks-flag": "^1.0.0",
+    "sweetalert2": "^11.4.24",
     "tar": "^6.1.11",
     "to-readable-stream": "^1.0.0",
     "to-regex-range": "^5.0.1",

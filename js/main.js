@@ -70,10 +70,10 @@ function mostrarActividades() {
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesGuardadas.activity_name}</div>
         <div class="card-body">
-            <h4 class="card-title">${(formatearFechaDDMMAA(actividadesGuardadas.activity_date))}</h4>
+            <h4 class="card-title">Fecha: ${(formatearFechaDDMMAA(actividadesGuardadas.activity_date))}</h4>
             <h5>${actividadesGuardadas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesGuardadas.activity_date)} días</h5>
-            <p class="card-text">$ ${actividadesGuardadas.activity_value}</p>
+            <p class="card-text">valor actividad $ ${actividadesGuardadas.activity_value}</p>
            <button onClick="actividadFavorita(${actividadesGuardadas.id})" class="btn btn-outline-success">Favoritear</button>
             <button onClick="eliminarActividad(${actividadesGuardadas.id})" class="btn btn-outline-success">Eliminar</button>
         </div>
@@ -89,10 +89,10 @@ function mostrarActividadesFavoritas() {
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesFavoritas.activity_name}</div>
         <div class="card-body">
-            <h4 class="card-title">${formatearFechaDDMMAA(actividadesFavoritas.activity_date)}</h4>
+            <h4 class="card-title">Fecha: ${formatearFechaDDMMAA(actividadesFavoritas.activity_date)}</h4>
             <h5>${actividadesFavoritas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesFavoritas.activity_date)} días</h5>
-            <p class="card-text">$ ${actividadesFavoritas.activity_value}</p>
+            <p class="card-text">valor actividad $ ${actividadesFavoritas.activity_value}</p>
             <button onClick="eliminarActividadFavorita(${actividadesFavoritas.id})" class="btn btn-outline-success">Eliminar Fav</button>
         </div>
         </div>
@@ -107,10 +107,10 @@ function mostrarActividadesUFavoritas() {
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesUFavoritas.activity_name}</div>
         <div class="card-body">
-            <h4 class="card-title">${(formatearFechaDDMMAA(actividadesUFavoritas.activity_date))}</h4>
+            <h4 class="card-title">Fecha: ${(formatearFechaDDMMAA(actividadesUFavoritas.activity_date))}</h4>
             <h5>${actividadesUFavoritas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesUFavoritas.activity_date)} días</h5>
-            <p class="card-text">$ ${actividadesUFavoritas.activity_value}</p>
+            <p class="card-text">valor actividad $ ${actividadesUFavoritas.activity_value}</p>
             <button onClick="eliminarActividadUFavorita(${actividadesUFavoritas.id})" class="btn btn-outline-success">Eliminar Fav</button>
         </div>
         </div>
@@ -126,9 +126,9 @@ function mostrarActividadesUsuarios(actividadesUsuarios) {
         <div class="card-header"> <h3>${actividadesUsuarios.activity_name} </h3></div>
         <div class="card-body">
         <h4>${actividadesUsuarios.country} / ${actividadesUsuarios.locat}</h4>
-            <h5 class="card-title">${formatearFechaDDMMAA(actividadesUsuarios.activity_date)}</h5>
+            <h5 class="card-title">Fecha: ${formatearFechaDDMMAA(actividadesUsuarios.activity_date)}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesUsuarios.activity_date)} días</h5>
-            <p class="card-text">$ ${actividadesUsuarios.activity_value}</p>
+            <p class="card-text">valor actividad $ ${actividadesUsuarios.activity_value}</p>
             <button onClick="actividadUFavorita(${(actividadesUsuarios.id)-1})" class="btn btn-outline-success">Favoritear</button>        
         </div>
         </div>
@@ -137,13 +137,44 @@ function mostrarActividadesUsuarios(actividadesUsuarios) {
 }
 
 
-
 function resetearLocalStore() {
-    localStorage.removeItem("StorageActividadesFavoritas");
-    localStorage.removeItem("StorageActividades");
-    location.reload();
+    if (localStorage.getItem("StorageActividades") !== null) {
+        Swal.fire({
+                title: "Estas segur@?",
+                text: "Estas a punto de borrar todas las actividades que creaste",
+                type: "warning",
+                confirmButtonText: "Si, Borrar todo!",
+                showCancelButton: true
+            })
+            .then((result) => {
+                if (result.value) {
+                    localStorage.removeItem("StorageActividadesFavoritas");
+                    localStorage.removeItem("StorageActividades");
+                    location.reload();
+                    swal(
+                        'Operación exitosa :)',
+                        'Se eliminaron todas las actividades que creaste',
+                        'success'
+                    )
 
+                } else if (result.dismiss === 'cancel') {
+                    swal(
+                        'Cancelado',
+                        'No se borró ninguna actividad',
+                        'info'
+                    )
+                }
+            })
+    } else {
+        swal(
+            'No se puede borrar',
+            'Aún no creaste ninguna actividad',
+            'warning'
+        )
+    }
 }
+
+
 
 //Formatea una fecha en milisegundos y la pasa a formato DDMMAA  
 function formatearFechaDDMMAA(fecha) {
@@ -177,65 +208,118 @@ function crearActividad() {
     locat = document.getElementById("locat").value;
 
     if (activity_name == '' || activity_date == '' || activity_value == '' || country == '' || locat == '') {
-        swal("Para crear la actividad", "...Debe completar todos los campos");
+        swal(
+            'Cancelado',
+            'Para crear una actividad todos los campos tienen que estar completos',
+            'warning'
+        )
         return;
     }
 
-    //Guarda al Array en el que están TODAS las actividades existentes
-    let indice = actividadesGuardadas.length;
-    actividadesGuardadas.push(new Actividades(indice++, activity_name, activity_date, activity_value, locat, country));
+    Swal.fire({
+        title: 'Estás por crear una nueva actividad?',
+        showDenyButton: true,
+        confirmButtonText: 'Crear',
+        denyButtonText: `Cancelar`,
+    }).then((result) => {
 
-    location.reload()
-    localStorage.setItem("StorageActividades", JSON.stringify(actividadesGuardadas));
-    location.reload()
+        if (result.isConfirmed) {
+            Swal.fire('Felicitaciones', 'Creaste una nueva actividad', 'success')
+                //Guarda al Array en el que están TODAS las actividades existentes
+            let indice = actividadesGuardadas.length;
+            actividadesGuardadas.push(new Actividades(indice++, activity_name, activity_date, activity_value, locat, country));
+            location.reload()
+            localStorage.setItem("StorageActividades", JSON.stringify(actividadesGuardadas));
+            location.reload()
+        } else if (result.isDenied) {
+            Swal.fire('La actividad no fue creada', '', 'info')
+        }
+    })
 };
 
 
-//Agrega la actividad Favorita al array de Favoritos
+
 function actividadFavorita(identificador) {
-    let indice = identificador - 1;
-    let objeto_seleccionado = {};
-    objeto_seleccionado = actividadesGuardadas[identificador];
 
-    if (!actividadesFavoritas.some(e => e.id === identificador)) {
+    Swal.fire({
+        title: 'Querés favoritear tu Actividad?',
+        text: "",
+        type: 'info',
+        showDenyButton: true,
+        confirmButtonText: 'Agregar a favoritos',
+        denyButtonText: `Cancelar`,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let indice = identificador - 1;
+            let objeto_seleccionado = {};
+            objeto_seleccionado = actividadesGuardadas[identificador];
 
-        actividadesFavoritas.push(objeto_seleccionado);
-        location.reload()
-        localStorage.setItem("StorageActividadesFavoritas", JSON.stringify(actividadesFavoritas));
-        location.reload()
-    } else {
-        swal("La actividad ya se encuentra en favoritos", "..Podes Favoritear otras...")
-    }
-}
+            if (!actividadesFavoritas.some(e => e.id === identificador)) {
 
+                actividadesFavoritas.push(objeto_seleccionado);
+                Swal.fire('Actividad agregada a favoritos', '', 'success')
+                location.reload()
+                localStorage.setItem("StorageActividadesFavoritas", JSON.stringify(actividadesFavoritas));
+                location.reload()
 
-
-
+            } else {
+                swal("La actividad ya se encuentra en favoritos", "..Podes Favoritear otras...")
+            }
+        } else if (result.isDenied) {
+            Swal.fire('Cancelado', 'No se agregó a favoritos', 'info')
+        }
+    })
+};
 
 
 
 //Agrega la actividad Favorita al array de Favoritos
 function actividadUFavorita(identificador) {
 
-    let indice = identificador - 1;
-    let objeto_seleccionado = {};
-    objeto_seleccionado = actividadesUsuarios[identificador];
+    Swal.fire({
+        title: 'Querés favoritear la Actividad?',
+        text: "",
+        type: 'info',
+        showDenyButton: true,
+        confirmButtonText: 'Agregar a favoritos',
+        denyButtonText: `Cancelar`,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let indice = identificador - 1;
+            let objeto_seleccionado = {};
+            objeto_seleccionado = actividadesUsuarios[identificador];
 
-    if (!actividadesUFavoritas.some(e => e.id === identificador)) {
-        actividadesUFavoritas.push(objeto_seleccionado);
-        location.reload()
-        localStorage.setItem("StorageActividadesUFavoritas", JSON.stringify(actividadesUFavoritas));
-        location.reload()
-    } else {
-        swal("La actividad ya se encuentra en favoritos", "..Podes Favoritear otras...")
-    }
+            if (!actividadesUFavoritas.some(e => e.id === identificador)) {
 
+                actividadesUFavoritas.push(objeto_seleccionado);
+                Swal.fire('Actividad agregada a favoritos', '', 'success')
+                location.reload()
+                localStorage.setItem("StorageActividadesUFavoritas", JSON.stringify(actividadesUFavoritas));
+                location.reload()
 
+            } else {
+                swal("La actividad ya se encuentra en favoritos", "..Podes Favoritear otras...")
+            }
+        } else if (result.isDenied) {
+            Swal.fire('Cancelado', 'No se agregó a favoritos', 'info')
+        }
+    })
 };
 
 
 
-//
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -275,41 +359,78 @@ function eliminarActividadFavorita(id) {
 
 
 function eliminarActividadUFavorita(id) {
-
-    swal({
+    Swal.fire({
         title: 'Actividad creada por otro usuario - Eliminar de Favoritos?',
         text: "No podrás revertir esta acción!",
         type: 'warning',
-        showCancelButton: true,
-        showConfirmButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si, Eliminar!'
+        showDenyButton: true,
+        confirmButtonText: 'Eliminar de Favoritos',
+        denyButtonText: `Cancelar`,
+    }).then((result) => {
 
-    }).then(function() {
+        if (result.isConfirmed) {
+            let favoritos_filtrado = actividadesUFavoritas.filter((elemento) => elemento.id != id);
+            actividadesUFavoritas = favoritos_filtrado;
+            if (actividadesUFavoritas.length > 0) {
+                localStorage.setItem("StorageActividadesUFavoritas", JSON.stringify(actividadesUFavoritas));
+                location.reload();
+            } else {
+                localStorage.removeItem("StorageActividadesUFavoritas");
+                location.reload();
+                swal(
+                    'Eliminada!',
+                    'Se eliminó la actividad de favoritos.',
+                    'success'
+                );
 
-        let favoritos_filtrado = actividadesUFavoritas.filter((elemento) => elemento.id != id);
-        actividadesUFavoritas = favoritos_filtrado;
-        if (actividadesUFavoritas.length > 0) {
-            localStorage.setItem("StorageActividadesUFavoritas", JSON.stringify(actividadesUFavoritas));
-            location.reload();
-        } else {
-            localStorage.removeItem("StorageActividadesUFavoritas");
-            location.reload();
-            swal(
-                'Eliminada!',
-                'Se eliminó la actividad de favoritos.',
-                'success'
-            );
-
+            }
+        } else if (result.isDenied) {
+            Swal.fire('Cancelado', 'La actividad sigue favorita', 'info')
         }
-
-
-
-
     })
+};
 
-}
+
+
+
+
+
+/*
+
+Swal.fire({
+    title: 'Actividad creada por otro usuario - Eliminar de Favoritos?',
+    text: "No podrás revertir esta acción!",
+    type: 'warning',
+    showCancelButton: true,
+    showConfirmButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, Eliminar!'
+
+}).then(function() {
+
+    let favoritos_filtrado = actividadesUFavoritas.filter((elemento) => elemento.id != id);
+    actividadesUFavoritas = favoritos_filtrado;
+    if (actividadesUFavoritas.length > 0) {
+        localStorage.setItem("StorageActividadesUFavoritas", JSON.stringify(actividadesUFavoritas));
+        location.reload();
+    } else {
+        localStorage.removeItem("StorageActividadesUFavoritas");
+        location.reload();
+        swal(
+            'Eliminada!',
+            'Se eliminó la actividad de favoritos.',
+            'success'
+        );
+
+    }
+
+
+
+
+})*/
+
+
 
 
 
