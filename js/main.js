@@ -125,7 +125,7 @@ function mostrarActividadesUsuarios(actividadesUsuarios) {
     actividadesUsuarios.forEach((actividadesUsuarios) => {
         containerActividadesUsuarios.innerHTML += `
         <div class="card border-primary mb-3" style="max-width: 20rem;">
-        <div class="card-header"> <h3>${actividadesUsuarios.activity_name} </h3></div>
+        <div class="card-header">${actividadesUsuarios.activity_name} </div>
         <div class="card-body">
         <h4>${actividadesUsuarios.country} / ${actividadesUsuarios.locat}</h4>
             <h5 class="card-title">Fecha: ${formatearFechaDDMMAA(actividadesUsuarios.activity_date)}</h5>
