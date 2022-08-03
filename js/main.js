@@ -89,7 +89,8 @@ function mostrarActividadesFavoritas() {
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesFavoritas.activity_name}</div>
         <div class="card-body">
-            <h4 class="card-title">Fecha: ${formatearFechaDDMMAA(actividadesFavoritas.activity_date)}</h4>
+        <h4>${actividadesFavoritas.country} / ${actividadesFavoritas.locat}</h4>
+            <h5 class="card-title">Fecha: ${formatearFechaDDMMAA(actividadesFavoritas.activity_date)}</h5>
             <h5>${actividadesFavoritas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesFavoritas.activity_date)} días</h5>
             <p class="card-text">valor actividad $ ${actividadesFavoritas.activity_value}</p>
@@ -107,7 +108,8 @@ function mostrarActividadesUFavoritas() {
         <div class="card border-primary mb-3" style="max-width: 20rem;">
         <div class="card-header">${actividadesUFavoritas.activity_name}</div>
         <div class="card-body">
-            <h4 class="card-title">Fecha: ${(formatearFechaDDMMAA(actividadesUFavoritas.activity_date))}</h4>
+        <h4>${actividadesUFavoritas.country} / ${actividadesUFavoritas.locat}</h4>
+            <h5 class="card-title">Fecha: ${(formatearFechaDDMMAA(actividadesUFavoritas.activity_date))}</h5>
             <h5>${actividadesUFavoritas.locat}</h5>
             <h5>Faltan ${calcularCuantosDiasFaltan(actividadesUFavoritas.activity_date)} días</h5>
             <p class="card-text">valor actividad $ ${actividadesUFavoritas.activity_value}</p>
